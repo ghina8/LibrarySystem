@@ -28,5 +28,34 @@ namespace LibraryAPI.Controllers
 
             return Ok(book);
         }
+        [HttpPut("{id}")]
+        public IActionResult UpdateBook(int id, Book updatedBook)
+        {
+            var book = _context.Books.Find(id);
+
+            if (book == null)
+                return NotFound();
+
+            book.Title = updatedBook.Title;
+            book.Author = updatedBook.Author;
+            book.Category = updatedBook.Category;
+
+            _context.SaveChanges();
+
+            return Ok(book);
+        }
+        [HttpDelete("{id}")]
+        public IActionResult DeleteBook(int id)
+        {
+            var book = _context.Books.Find(id);
+
+            if (book == null)
+                return NotFound();
+
+            _context.Books.Remove(book);
+            _context.SaveChanges();
+
+            return Ok();
+        }
     }
 }

@@ -22,12 +22,14 @@ namespace LibrarySystem
 
         private void btnShow_Click(object sender, EventArgs e)
         {
-            int total = DataStore.Books.Count;
-            int science = DataStore.Books.Count(b => b.Category.ToLower() == "science");
-            int novel = DataStore.Books.Count(b => b.Category.ToLower() == "novel");
-            int history = DataStore.Books.Count(b => b.Category.ToLower() == "history");
-            int technology = DataStore.Books.Count(b => b.Category.ToLower() == "technology");
-            int kids = DataStore.Books.Count(b => b.Category.ToLower() == "kids");
+            DataTable dt = DatabaseHelper.GetData("SELECT * FROM Books");
+
+            int total = dt.Rows.Count;
+            int science = dt.Select("Category = 'Science'").Length;
+            int novel = dt.Select("Category = 'Novel'").Length;
+            int history = dt.Select("Category = 'History'").Length;
+            int technology = dt.Select("Category = 'Technology'").Length;
+            int kids = dt.Select("Category = 'Kids'").Length;
 
             lblTotal.Text = "Total Books: " + total;
             lblScience.Text = "Science Books: " + science;

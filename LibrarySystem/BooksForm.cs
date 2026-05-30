@@ -28,22 +28,18 @@ namespace LibrarySystem
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            if (txtId.Text == "" || txtTitle.Text == "" || txtAuthor.Text == "" || txtCategory.Text == "")
+            if (txtTitle.Text == "" || txtAuthor.Text == "" || txtCategory.Text == "")
             {
                 MessageBox.Show("Please fill all fields");
                 return;
             }
 
-            Book b = new Book();
-            b.Id = int.Parse(txtId.Text);
-            b.Title = txtTitle.Text;
-            b.Author = txtAuthor.Text;
-            b.Category = txtCategory.Text;
+            string query = $"INSERT INTO Books (Title, Author, Category) " +
+               $"VALUES ('{txtTitle.Text}', '{txtAuthor.Text}', '{txtCategory.Text}')";
 
-            DataStore.Books.Add(b);
+            DatabaseHelper.ExecuteQuery(query);
 
-            dataGridView1.DataSource = null;
-            dataGridView1.DataSource = DataStore.Books;
+            LoadBooks();
 
             MessageBox.Show("Book added successfully");
 
@@ -58,24 +54,21 @@ namespace LibrarySystem
         {
             if (dataGridView1.CurrentRow != null)
             {
-                Book selectedBook = (Book)dataGridView1.CurrentRow.DataBoundItem;
-                DataStore.Books.Remove(selectedBook);
+                int id = Convert.ToInt32(dataGridView1.CurrentRow.Cells["Id"].Value);
 
-                dataGridView1.DataSource = null;
-                dataGridView1.DataSource = DataStore.Books;
+                string query = $"DELETE FROM Books WHERE Id = {id}";
+                DatabaseHelper.ExecuteQuery(query);
 
+                LoadBooks();
+
+                MessageBox.Show("Book deleted successfully");
             }
-            MessageBox.Show("Book deleted successfully");
         }
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            var result = DataStore.Books
-                .Where(x => x.Title.ToLower().Contains(txtSearch.Text))
-                .ToList();
-
-            dataGridView1.DataSource = null;
-            dataGridView1.DataSource = result;
+            string query = $"SELECT * FROM Books WHERE Title LIKE '%{txtSearch.Text}%'";
+            dataGridView1.DataSource = DatabaseHelper.GetData(query);
         }
 
         private void dataGridView1_CellContent(object sender, DataGridViewCellEventArgs e)
@@ -109,27 +102,17 @@ namespace LibrarySystem
                 return;
             }
 
-            int id;
-            if (!int.TryParse(txtId.Text, out id))
-            {
-                MessageBox.Show("ID must be a number");
-                return;
-            }
+            string query = $"UPDATE Books SET " +
+                           $"Title='{txtTitle.Text}', " +
+                           $"Author='{txtAuthor.Text}', " +
+                           $"Category='{txtCategory.Text}' " +
+                           $"WHERE Id={txtId.Text}";
 
-            if (dataGridView1.CurrentRow != null)
-            {
-                Book b = (Book)dataGridView1.CurrentRow.DataBoundItem;
+            DatabaseHelper.ExecuteQuery(query);
 
-                b.Id = id;
-                b.Title = txtTitle.Text;
-                b.Author = txtAuthor.Text;
-                b.Category = txtCategory.Text;
+            LoadBooks();
 
-                dataGridView1.DataSource = null;
-                dataGridView1.DataSource = DataStore.Books;
-
-                MessageBox.Show("Book updated successfully");
-            }
+            MessageBox.Show("Book updated successfully");
         }
 
         private void btnBack_Click(object sender, EventArgs e)
@@ -139,8 +122,7 @@ namespace LibrarySystem
 
         private void btnShowAll_Click(object sender, EventArgs e)
         {
-            dataGridView1.DataSource = null;
-            dataGridView1.DataSource = DataStore.Books;
+            LoadBooks();
         }
 
         private void btnClear_Click(object sender, EventArgs e)

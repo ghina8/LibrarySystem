@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="LibraryAPI/LibraryAPI.csproj" Id="b8f8fa10-986a-4bc3-91c1-b252b6cbb5c6" />
   <Project Path="LibrarySystem/LibrarySystem.csproj" />
 </Solution>

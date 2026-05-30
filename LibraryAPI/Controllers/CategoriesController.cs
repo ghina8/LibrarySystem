@@ -1,4 +1,5 @@
 ﻿using LibraryAPI.Data;
+using LibraryAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,6 +20,14 @@ namespace LibraryAPI.Controllers
         public IActionResult GetCategories()
         {
             return Ok(_context.Categories.ToList());
+        }
+        [HttpPost]
+        public IActionResult AddCategory(Category category)
+        {
+            _context.Categories.Add(category);
+            _context.SaveChanges();
+
+            return Ok(category);
         }
     }
 }

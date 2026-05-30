@@ -29,5 +29,18 @@ namespace LibraryAPI.Controllers
 
             return Ok(user);
         }
+        [HttpPost("login")]
+        public IActionResult Login(User user)
+        {
+            var existingUser = _context.Users
+                .FirstOrDefault(x =>
+                    x.UserName == user.UserName &&
+                    x.Password == user.Password);
+
+            if (existingUser == null)
+                return Unauthorized();
+
+            return Ok("Login Successful");
+        }
     }
 }

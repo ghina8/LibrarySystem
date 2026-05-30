@@ -14,6 +14,11 @@ namespace LibrarySystem
         public BooksForm()
         {
             InitializeComponent();
+            LoadBooks();
+        }
+        private void LoadBooks()
+        {
+            dataGridView1.DataSource = DatabaseHelper.GetData("SELECT * FROM Books");
         }
 
         private void label3_Click(object sender, EventArgs e)

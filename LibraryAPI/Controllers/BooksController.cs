@@ -57,5 +57,16 @@ namespace LibraryAPI.Controllers
 
             return Ok();
         }
+        [HttpGet("search")]
+        public IActionResult SearchBooks(string keyword)
+        {
+            var books = _context.Books
+                .Where(b => b.Title.Contains(keyword)
+                         || b.Author.Contains(keyword)
+                         || b.Category.Contains(keyword))
+                .ToList();
+
+            return Ok(books);
+        }
     }
 }
